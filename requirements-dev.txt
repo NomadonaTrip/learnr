@@ -1,0 +1,58 @@
+# Development dependencies for LearnR
+# Install with: pip install -r requirements-dev.txt
+
+# Include production dependencies
+-r requirements.txt
+
+# Code formatting
+black==24.1.1
+isort==5.13.2
+
+# Linting
+flake8==7.0.0
+flake8-docstrings==1.7.0
+flake8-bugbear==24.1.17
+pylint==3.0.3
+
+# Type checking
+mypy==1.8.0
+types-python-jose==3.3.4.8
+types-passlib==1.7.7.20240106
+
+# Security
+bandit==1.7.6
+safety==3.0.1
+
+# Testing tools
+pytest-xdist==3.5.0  # Parallel test execution
+pytest-timeout==2.2.0  # Test timeout enforcement
+pytest-mock==3.12.0  # Enhanced mocking
+faker==22.6.0  # Test data generation
+
+# Code coverage
+coverage[toml]==7.4.1
+
+# Documentation
+mkdocs==1.5.3
+mkdocs-material==9.5.6
+mkdocstrings[python]==0.24.0
+
+# Pre-commit hooks
+pre-commit==3.6.0
+
+# Database tools
+pgcli==4.0.1  # PostgreSQL CLI with autocomplete
+
+# API testing
+httpx==0.26.0  # Already in requirements.txt but good to highlight
+
+# Performance profiling
+py-spy==0.3.14
+memory-profiler==0.61.0
+
+# Debugging
+ipython==8.20.0
+ipdb==0.13.13
+
+# Environment management
+python-dotenv==1.0.1  # Already in requirements.txt but good to highlight
