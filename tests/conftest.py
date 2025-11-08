@@ -11,18 +11,18 @@ from fastapi.testclient import TestClient
 from typing import Generator
 import os
 
-# Set test environment variables before importing app
-os.environ["DATABASE_URL"] = "postgresql://postgres:postgres@localhost:5432/learnr_test_db"
-os.environ["ENCRYPTION_KEY"] = "8B7ZqnP_QvKxWmN5rF2jYhT3cD9gV6sA1wL4eR8uI0o="  # Valid Fernet key for testing
-os.environ["SECRET_KEY"] = "test-secret-key-for-jwt-testing-use-strong-key-in-production"
-os.environ["OPENAI_API_KEY"] = "test-openai-key"
+# Set test environment variables before importing app (only if not already set)
+os.environ.setdefault("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/learnr_test_db")
+os.environ.setdefault("ENCRYPTION_KEY", "8B7ZqnP_QvKxWmN5rF2jYhT3cD9gV6sA1wL4eR8uI0o=")  # Valid Fernet key for testing
+os.environ.setdefault("SECRET_KEY", "test-secret-key-for-jwt-testing-use-strong-key-in-production")
+os.environ.setdefault("OPENAI_API_KEY", "test-openai-key")
 
 from app.models.database import Base, get_db
 from app.main import app
 
 
-# Test database engine
-TEST_DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/learnr_test_db"
+# Test database engine - use DATABASE_URL from environment
+TEST_DATABASE_URL = os.environ["DATABASE_URL"]
 engine = create_engine(TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
