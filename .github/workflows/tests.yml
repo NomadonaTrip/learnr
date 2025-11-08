@@ -54,11 +54,8 @@ jobs:
             sleep 2
           done
 
-          # Create database tables (since we have models but no migrations yet)
-          python -c "from app.models.database import Base, engine; Base.metadata.create_all(bind=engine)" || echo "Database tables already exist"
-
-          # Apply database migrations if they exist
-          alembic upgrade head 2>/dev/null || echo "No Alembic migrations to apply (using direct table creation)"
+          echo "PostgreSQL is ready!"
+          echo "Note: Database tables will be created by test fixtures (conftest.py)"
 
       - name: Run tests (excluding hanging tests)
         env:
