@@ -48,8 +48,17 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/learnr_test
         run: |
-          # Apply database migrations
-          alembic upgrade head || echo "No migrations to apply"
+          # Wait for PostgreSQL to be ready
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+
+          # Create database tables (since we have models but no migrations yet)
+          python -c "from app.models.database import Base, engine; Base.metadata.create_all(bind=engine)" || echo "Database tables already exist"
+
+          # Apply database migrations if they exist
+          alembic upgrade head 2>/dev/null || echo "No Alembic migrations to apply (using direct table creation)"
 
       - name: Run tests (excluding hanging tests)
         env:
