@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:15
+        image: pgvector/pgvector:pg15
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -47,6 +47,7 @@ jobs:
       - name: Set up database
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/learnr_test
+          PGPASSWORD: postgres
         run: |
           # Wait for PostgreSQL to be ready
           until pg_isready -h localhost -p 5432 -U postgres; do
@@ -55,6 +56,11 @@ jobs:
           done
 
           echo "PostgreSQL is ready!"
+
+          # Enable pgvector extension
+          psql -h localhost -U postgres -d learnr_test -c "CREATE EXTENSION IF NOT EXISTS vector;"
+          echo "pgvector extension enabled"
+
           echo "Note: Database tables will be created by test fixtures (conftest.py)"
 
       - name: Run tests (excluding hanging tests)
