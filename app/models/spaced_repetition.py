@@ -33,8 +33,8 @@ class SpacedRepetitionCard(Base):
     interval_days = Column(Integer, nullable=False, default=1)  # Days until next review
 
     # Review Scheduling
-    last_reviewed_at = Column(DateTime, nullable=True)
-    next_review_at = Column(DateTime, nullable=False)  # When card is due for review
+    last_reviewed_at = Column(DateTime(timezone=True), nullable=True)
+    next_review_at = Column(DateTime(timezone=True), nullable=False)  # When card is due for review
     is_due = Column(Boolean, nullable=False, default=True)  # Computed: next_review_at <= now()
 
     # Performance History
@@ -43,8 +43,8 @@ class SpacedRepetitionCard(Base):
     last_quality_rating = Column(Integer, nullable=True)  # Last SM-2 quality (0-5)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     user = relationship("User", back_populates="sr_cards")

@@ -29,8 +29,8 @@ class Session(Base):
     session_type = Column(String(20), nullable=False)  # 'diagnostic' | 'practice' | 'mock_exam' | 'review'
 
     # Session Metadata
-    started_at = Column(DateTime, nullable=False, server_default=func.now())
-    completed_at = Column(DateTime, nullable=True)
+    started_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    completed_at = Column(DateTime(timezone=True), nullable=True)
     duration_seconds = Column(Integer, nullable=True)
 
     # Session Outcomes
@@ -42,8 +42,8 @@ class Session(Base):
     is_completed = Column(Boolean, nullable=False, default=False)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     user = relationship("User", back_populates="sessions")
@@ -100,7 +100,7 @@ class QuestionAttempt(Base):
     question_difficulty_at_attempt = Column(DECIMAL(5, 2), nullable=True)
 
     # Timestamps
-    attempted_at = Column(DateTime, nullable=False, server_default=func.now())
+    attempted_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User", back_populates="question_attempts")
@@ -145,8 +145,8 @@ class UserCompetency(Base):
     incorrect_count = Column(Integer, nullable=False, default=0)
 
     # Timestamps
-    last_updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    last_updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User", back_populates="competencies")
@@ -178,8 +178,8 @@ class ReadingConsumed(Base):
     session_id = Column(String(36), ForeignKey('sessions.session_id', ondelete='SET NULL'), nullable=True)
 
     # Reading Metadata
-    started_reading_at = Column(DateTime, nullable=False, server_default=func.now())
-    finished_reading_at = Column(DateTime, nullable=True)
+    started_reading_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    finished_reading_at = Column(DateTime(timezone=True), nullable=True)
     time_spent_seconds = Column(Integer, nullable=True)
 
     # Engagement
@@ -187,7 +187,7 @@ class ReadingConsumed(Base):
     completed = Column(Boolean, nullable=False, default=False)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User", back_populates="reading_consumed")
