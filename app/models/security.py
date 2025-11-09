@@ -43,7 +43,7 @@ class SecurityLog(Base):
     event_metadata = Column(JSON, nullable=True)  # Flexible storage for event-specific data
 
     # Timestamp (immutable - no updated_at)
-    occurred_at = Column(DateTime, nullable=False, server_default=func.now())
+    occurred_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User", foreign_keys=[user_id], back_populates="security_logs")
@@ -79,16 +79,16 @@ class RateLimitEntry(Base):
     # Rate Limit Tracking
     endpoint = Column(String(255), nullable=False)  # API endpoint being rate limited
     request_count = Column(Integer, nullable=False, default=1)
-    window_start = Column(DateTime, nullable=False, server_default=func.now())
-    window_end = Column(DateTime, nullable=False)
+    window_start = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    window_end = Column(DateTime(timezone=True), nullable=False)
 
     # Status
     is_blocked = Column(Boolean, nullable=False, default=False)
-    blocked_until = Column(DateTime, nullable=True)
+    blocked_until = Column(DateTime(timezone=True), nullable=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     user = relationship("User")

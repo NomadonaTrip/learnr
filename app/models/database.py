@@ -3,7 +3,7 @@ Database configuration and session management.
 Uses SQLAlchemy 2.0+ with declarative base.
 """
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session, declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from typing import Generator
 from app.core.config import settings
 

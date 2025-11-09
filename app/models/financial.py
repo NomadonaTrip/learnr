@@ -41,8 +41,8 @@ class SubscriptionPlan(Base):
     is_active = Column(Boolean, nullable=False, default=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     course = relationship("Course", back_populates="subscription_plans")
@@ -77,19 +77,19 @@ class Subscription(Base):
     status = Column(String(20), nullable=False, default='active')  # 'active' | 'canceled' | 'past_due' | 'trialing'
 
     # Billing Cycle
-    current_period_start = Column(DateTime, nullable=False)
-    current_period_end = Column(DateTime, nullable=False)
+    current_period_start = Column(DateTime(timezone=True), nullable=False)
+    current_period_end = Column(DateTime(timezone=True), nullable=False)
     cancel_at_period_end = Column(Boolean, nullable=False, default=False)
 
     # Timestamps
-    started_at = Column(DateTime, nullable=False, server_default=func.now())
-    canceled_at = Column(DateTime, nullable=True)
-    ended_at = Column(DateTime, nullable=True)
-    trial_start = Column(DateTime, nullable=True)
-    trial_end = Column(DateTime, nullable=True)
+    started_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    canceled_at = Column(DateTime(timezone=True), nullable=True)
+    ended_at = Column(DateTime(timezone=True), nullable=True)
+    trial_start = Column(DateTime(timezone=True), nullable=True)
+    trial_end = Column(DateTime(timezone=True), nullable=True)
 
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     user = relationship("User", back_populates="subscriptions")
@@ -141,9 +141,9 @@ class Payment(Base):
     failure_message = Column(Text, nullable=True)
 
     # Timestamps
-    paid_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    paid_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     user = relationship("User", back_populates="payments")
@@ -183,8 +183,8 @@ class Refund(Base):
     status = Column(String(20), nullable=False)  # 'succeeded' | 'failed' | 'pending' | 'canceled'
 
     # Timestamps
-    refunded_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    refunded_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     payment = relationship("Payment", back_populates="refunds")
@@ -220,13 +220,13 @@ class Chargeback(Base):
     status = Column(String(30), nullable=False)  # 'warning_needs_response' | 'warning_under_review' | 'won' | 'lost'
 
     # Evidence Submission
-    evidence_due_by = Column(DateTime, nullable=True)
+    evidence_due_by = Column(DateTime(timezone=True), nullable=True)
     evidence_submitted = Column(Boolean, nullable=False, default=False)
 
     # Timestamps
-    disputed_at = Column(DateTime, nullable=False)
-    resolved_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    disputed_at = Column(DateTime(timezone=True), nullable=False)
+    resolved_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User")
@@ -263,8 +263,8 @@ class PaymentMethod(Base):
     is_active = Column(Boolean, nullable=False, default=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     user = relationship("User")
@@ -297,10 +297,10 @@ class Invoice(Base):
     status = Column(String(20), nullable=False)  # 'draft' | 'open' | 'paid' | 'void' | 'uncollectible'
 
     # Timestamps
-    invoice_date = Column(DateTime, nullable=False, server_default=func.now())
-    due_date = Column(DateTime, nullable=True)
-    paid_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    invoice_date = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    due_date = Column(DateTime(timezone=True), nullable=True)
+    paid_at = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User")
@@ -344,8 +344,8 @@ class RevenueEvent(Base):
     event_metadata = Column(JSON, nullable=True)
 
     # Timestamps (immutable - no updated_at)
-    occurred_at = Column(DateTime, nullable=False, server_default=func.now())
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    occurred_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     user = relationship("User")

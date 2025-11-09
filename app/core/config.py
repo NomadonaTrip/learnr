@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env",
         case_sensitive=True,
-        env_parse_none_str="None"
+        env_parse_none_str="None",
+        extra='ignore'  # Ignore extra environment variables not in Settings
     )
 
     # Application

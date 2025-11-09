@@ -53,8 +53,8 @@ class ContentChunk(Base):
     is_active = Column(Boolean, nullable=False, default=False)  # Only show approved, active content
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     course = relationship("Course", back_populates="content_chunks")
@@ -113,7 +113,7 @@ class ContentFeedback(Base):
     feedback_text = Column(Text, nullable=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     chunk = relationship("ContentChunk", back_populates="feedback")
@@ -140,17 +140,17 @@ class ContentEfficacy(Base):
     ka_id = Column(String(36), ForeignKey('knowledge_areas.ka_id', ondelete='CASCADE'), nullable=False)
 
     # Efficacy measurement
-    read_at = Column(DateTime, nullable=False)
+    read_at = Column(DateTime(timezone=True), nullable=False)
     competency_before = Column(DECIMAL(5, 2), nullable=False)
     competency_after = Column(DECIMAL(5, 2), nullable=True)
-    measured_at = Column(DateTime, nullable=True)
+    measured_at = Column(DateTime(timezone=True), nullable=True)
 
     # Computed
     improved = Column(Boolean, nullable=True)
     improvement_amount = Column(DECIMAL(5, 2), nullable=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
     # Relationships
     chunk = relationship("ContentChunk", back_populates="efficacy_records")

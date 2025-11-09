@@ -45,11 +45,11 @@ class Course(Base):
     updated_by = Column(String(36), ForeignKey('users.user_id'), nullable=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Cleanup Metadata (Decision #65)
-    auto_delete_at = Column(DateTime, nullable=True)  # For abandoned drafts
+    auto_delete_at = Column(DateTime(timezone=True), nullable=True)  # For abandoned drafts
 
     # Legacy Field (kept for backward compatibility)
     is_active = Column(Boolean, nullable=False, default=True)
@@ -95,8 +95,8 @@ class KnowledgeArea(Base):
     weight_percentage = Column(DECIMAL(5, 2), nullable=False)  # 0.00-100.00
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     course = relationship("Course", back_populates="knowledge_areas")
@@ -135,8 +135,8 @@ class Domain(Base):
     description = Column(Text, nullable=True)
 
     # Timestamps
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
-    updated_at = Column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=func.now(), onupdate=func.now())
 
     # Relationships
     knowledge_area = relationship("KnowledgeArea", back_populates="domains")
