@@ -1,0 +1,46 @@
+{
+  "questions": [
+    {
+      "ka_code": "REQ_LIFECYCLE",
+      "question_text": "Requirements should be documented in a single format throughout the project lifecycle.",
+      "question_type": "true_false",
+      "difficulty": 0.4,
+      "source": "custom",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": false,
+          "choice_order": 1,
+          "explanation": "Different stakeholders may need requirements in different formats (e.g., user stories for developers, use cases for testers, business rules for analysts)."
+        },
+        {
+          "choice_text": "False",
+          "is_correct": true,
+          "choice_order": 2,
+          "explanation": "Correct. Requirements can be represented in multiple formats to suit different audiences and purposes, as long as traceability is maintained."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_ANALYSIS",
+      "question_text": "All requirements must be testable and verifiable.",
+      "question_type": "true_false",
+      "difficulty": 0.3,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Correct. Every requirement must have clear acceptance criteria to verify it has been properly implemented."
+        },
+        {
+          "choice_text": "False",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Requirements that cannot be tested or verified are ambiguous and should be refined."
+        }
+      ]
+    }
+  ]
+}

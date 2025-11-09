@@ -1,0 +1,151 @@
+{
+  "questions": [
+    {
+      "ka_code": "BA_PLANNING",
+      "question_text": "What is included in the business analysis approach?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Methods, processes, and deliverables for business analysis activities",
+          "is_correct": true,
+          "choice_order": 1
+        },
+        {
+          "choice_text": "Project budget and timeline",
+          "is_correct": false,
+          "choice_order": 2
+        },
+        {
+          "choice_text": "Technical architecture diagrams",
+          "is_correct": false,
+          "choice_order": 3
+        }
+      ]
+    },
+    {
+      "ka_code": "ELICITATION",
+      "question_text": "Which factor should be considered when selecting elicitation techniques?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Stakeholder availability and preferences",
+          "is_correct": true,
+          "choice_order": 1
+        },
+        {
+          "choice_text": "Color scheme of documentation",
+          "is_correct": false,
+          "choice_order": 2
+        },
+        {
+          "choice_text": "Office location",
+          "is_correct": false,
+          "choice_order": 3
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_LIFECYCLE",
+      "question_text": "Baseline requirements can never be changed once approved.",
+      "question_type": "true_false",
+      "difficulty": 0.3,
+      "source": "custom",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": false,
+          "choice_order": 1
+        },
+        {
+          "choice_text": "False",
+          "is_correct": true,
+          "choice_order": 2,
+          "explanation": "Baselined requirements can be changed through formal change control processes."
+        }
+      ]
+    },
+    {
+      "ka_code": "STRATEGY_ANALYSIS",
+      "question_text": "What is the purpose of gap analysis in strategy analysis?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.7,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "To identify differences between current and desired future states",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Gap analysis compares current capabilities with desired capabilities to identify what needs to change."
+        },
+        {
+          "choice_text": "To find errors in code",
+          "is_correct": false,
+          "choice_order": 2
+        },
+        {
+          "choice_text": "To schedule project meetings",
+          "is_correct": false,
+          "choice_order": 3
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_ANALYSIS",
+      "question_text": "Which technique helps ensure requirements are complete and consistent?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Requirements verification and validation",
+          "is_correct": true,
+          "choice_order": 1
+        },
+        {
+          "choice_text": "Project kickoff meeting",
+          "is_correct": false,
+          "choice_order": 2
+        },
+        {
+          "choice_text": "Budget allocation",
+          "is_correct": false,
+          "choice_order": 3
+        }
+      ]
+    },
+    {
+      "ka_code": "SOLUTION_EVAL",
+      "question_text": "Solution performance should be measured against which criteria?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Business objectives and success criteria defined in requirements",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Performance metrics should align with the business value the solution was intended to deliver."
+        },
+        {
+          "choice_text": "Number of lines of code",
+          "is_correct": false,
+          "choice_order": 2
+        },
+        {
+          "choice_text": "Team size",
+          "is_correct": false,
+          "choice_order": 3
+        },
+        {
+          "choice_text": "Project duration",
+          "is_correct": false,
+          "choice_order": 4
+        }
+      ]
+    }
+  ]
+}

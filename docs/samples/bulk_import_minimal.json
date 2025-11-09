@@ -1,0 +1,28 @@
+{
+  "questions": [
+    {
+      "ka_code": "BA_PLANNING",
+      "question_text": "What is the primary purpose of business analysis planning?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "To define how business analysis work will be performed",
+          "is_correct": true,
+          "choice_order": 1
+        },
+        {
+          "choice_text": "To create project schedules",
+          "is_correct": false,
+          "choice_order": 2
+        },
+        {
+          "choice_text": "To develop technical specifications",
+          "is_correct": false,
+          "choice_order": 3
+        }
+      ]
+    }
+  ]
+}

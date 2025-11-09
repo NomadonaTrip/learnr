@@ -1,0 +1,38 @@
+{
+  "questions": [
+    {
+      "ka_code": "ELICITATION",
+      "domain_code": "TECHNIQUES",
+      "question_text": "Which elicitation technique is most effective for understanding user workflows?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Observation and job shadowing",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Observation allows you to see how users actually perform tasks in their real work environment, revealing nuances that might not emerge in interviews."
+        },
+        {
+          "choice_text": "Document analysis",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Document analysis is useful for understanding processes as documented, but may not reflect actual practice."
+        },
+        {
+          "choice_text": "Brainstorming",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Brainstorming generates ideas but doesn't capture existing workflows."
+        },
+        {
+          "choice_text": "Survey",
+          "is_correct": false,
+          "choice_order": 4,
+          "explanation": "Surveys gather data at scale but lack the depth to understand complex workflows."
+        }
+      ]
+    }
+  ]
+}

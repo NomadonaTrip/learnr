@@ -103,6 +103,46 @@ Restores database from a backup file.
 
 ---
 
+## Bulk Import Management
+
+### Validate Bulk Import JSON
+```bash
+python scripts/validate_bulk_import.py questions.json
+```
+Validates a bulk question import JSON file before sending to the API.
+
+**Features:**
+- JSON structure validation
+- Question distribution analysis
+- Difficulty level breakdown
+- Knowledge area coverage stats
+- Detailed error reporting
+
+**Usage Examples:**
+
+Validate JSON structure:
+```bash
+python scripts/validate_bulk_import.py docs/samples/bulk_import_batch.json
+```
+
+Show statistics only:
+```bash
+python scripts/validate_bulk_import.py questions.json --stats-only
+```
+
+**Sample Templates:**
+
+Use these templates as starting points:
+- `docs/samples/bulk_import_minimal.json` - Minimal single question
+- `docs/samples/bulk_import_with_explanations.json` - With answer explanations
+- `docs/samples/bulk_import_true_false.json` - True/False questions
+- `docs/samples/bulk_import_batch.json` - Multiple questions across KAs
+
+**Full Documentation:**
+See `docs/BULK_IMPORT_GUIDE.md` for complete API reference and examples.
+
+---
+
 ## Testing Scripts
 
 ### Test Database Connection
