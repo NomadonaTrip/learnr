@@ -101,3 +101,7 @@ def get_user_agent(request: Request) -> Optional[str]:
     Get user agent from request headers.
     """
     return request.headers.get("User-Agent")
+
+
+# Convenience dependency for admin-only endpoints
+get_current_admin_user = require_role("admin")
