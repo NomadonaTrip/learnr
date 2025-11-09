@@ -69,30 +69,40 @@ def list_users(
     # Build query
     query = db.query(User)
 
-    # Apply filters
-    if search:
-        search_term = f"%{search}%"
-        query = query.filter(
-            (User.email.ilike(search_term)) |
-            (User.first_name.ilike(search_term)) |
-            (User.last_name.ilike(search_term))
-        )
-
+    # Apply non-search filters first (can use database)
     if role:
         query = query.filter(User.role == role)
 
     if is_active is not None:
         query = query.filter(User.is_active == is_active)
 
-    # Get total count
-    total = query.count()
+    # For search on encrypted fields, we need to fetch and filter in Python
+    if search:
+        # Fetch all matching users (by role/active filters)
+        all_users = query.order_by(User.created_at.desc()).all()
 
-    # Calculate pagination
-    total_pages = math.ceil(total / per_page)
-    offset = (page - 1) * per_page
+        # Filter in Python after decryption
+        search_lower = search.lower()
+        filtered_users = [
+            user for user in all_users
+            if (search_lower in user.email.lower() or
+                search_lower in user.first_name.lower() or
+                search_lower in user.last_name.lower())
+        ]
 
-    # Get paginated users
-    users = query.order_by(User.created_at.desc()).offset(offset).limit(per_page).all()
+        # Calculate pagination
+        total = len(filtered_users)
+        total_pages = math.ceil(total / per_page)
+        offset = (page - 1) * per_page
+
+        # Apply pagination in Python
+        users = filtered_users[offset:offset + per_page]
+    else:
+        # No search - use database pagination
+        total = query.count()
+        total_pages = math.ceil(total / per_page)
+        offset = (page - 1) * per_page
+        users = query.order_by(User.created_at.desc()).offset(offset).limit(per_page).all()
 
     return AdminUserListResponse(
         users=[AdminUserListItem.model_validate(user) for user in users],
@@ -153,7 +163,7 @@ def get_metrics_overview(
         func.sum(Payment.amount)
     ).filter(
         and_(
-            Payment.payment_status == 'succeeded',
+            Payment.status == 'succeeded',
             Payment.created_at >= start_of_month
         )
     ).scalar() or Decimal('0.00')
