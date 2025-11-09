@@ -16,8 +16,8 @@ import math
 
 from app.api.dependencies import get_db, get_current_admin_user
 from app.models.user import User
-from app.models.course import Course, KnowledgeArea
-from app.models.question import Question
+from app.models.course import Course, KnowledgeArea, Domain
+from app.models.question import Question, AnswerChoice
 from app.models.content import ContentChunk
 from app.models.financial import Subscription, SubscriptionPlan, Payment
 from app.schemas.admin import (
@@ -36,7 +36,9 @@ from app.schemas.admin import (
     CreateKnowledgeAreasResponse,
     KnowledgeAreaResponse,
     PublishCourseResponse,
-    PublishCourseValidation
+    PublishCourseValidation,
+    BulkQuestionImportRequest,
+    BulkQuestionImportResponse
 )
 
 router = APIRouter()
@@ -468,4 +470,127 @@ def publish_course(
             ka_weights_valid=True,
             ready_for_learners=True
         )
+    )
+
+
+# ============================================================================
+# Bulk Question Import
+# ============================================================================
+
+@router.post("/courses/{course_id}/questions/bulk", response_model=BulkQuestionImportResponse, status_code=status.HTTP_201_CREATED)
+def bulk_import_questions(
+    course_id: UUID,
+    import_data: BulkQuestionImportRequest,
+    db: Session = Depends(get_db),
+    admin_user: User = Depends(get_current_admin_user)
+):
+    """
+    Bulk import questions for a course (admin only).
+
+    **Permissions:** admin or super_admin
+
+    **Features:**
+    - Import up to 500 questions at once
+    - Validates KA codes and domain codes
+    - Ensures exactly one correct answer per question
+    - Returns detailed success/failure statistics
+
+    **Decision #65:** Questions can be added to courses in any status
+    """
+    # Verify course exists
+    course = db.query(Course).filter(Course.course_id == str(course_id)).first()
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
+
+    # Get all KAs for this course (for code lookup)
+    kas = db.query(KnowledgeArea).filter(KnowledgeArea.course_id == str(course_id)).all()
+    ka_map = {ka.ka_code: ka.ka_id for ka in kas}
+
+    # Get all domains for all KAs in this course (for code lookup)
+    ka_ids = [ka.ka_id for ka in kas]
+    domains = db.query(Domain).filter(Domain.ka_id.in_(ka_ids)).all() if ka_ids else []
+    domain_map = {domain.domain_code: domain.domain_id for domain in domains}
+
+    # Track import results
+    imported = 0
+    failed = 0
+    errors = []
+
+    # Process each question with savepoints
+    for idx, q_data in enumerate(import_data.questions, start=1):
+        # Validate KA code
+        if q_data.ka_code not in ka_map:
+            errors.append(f"Question {idx}: Invalid KA code '{q_data.ka_code}'")
+            failed += 1
+            continue
+
+        # Validate domain code (if provided)
+        domain_id = None
+        if q_data.domain_code:
+            if q_data.domain_code not in domain_map:
+                errors.append(f"Question {idx}: Invalid domain code '{q_data.domain_code}'")
+                failed += 1
+                continue
+            domain_id = domain_map[q_data.domain_code]
+
+        # Use savepoint to isolate this question's transaction
+        savepoint = db.begin_nested()
+        try:
+            # Create question
+            question = Question(
+                course_id=str(course_id),
+                ka_id=ka_map[q_data.ka_code],
+                domain_id=domain_id,
+                question_text=q_data.question_text,
+                question_type=q_data.question_type,
+                difficulty=q_data.difficulty,
+                source=q_data.source,
+                is_active=True
+            )
+            db.add(question)
+            db.flush()  # Get question_id without committing
+
+            # Create answer choices
+            for choice_data in q_data.answer_choices:
+                choice = AnswerChoice(
+                    question_id=question.question_id,
+                    choice_text=choice_data.choice_text,
+                    is_correct=choice_data.is_correct,
+                    choice_order=choice_data.choice_order,
+                    explanation=choice_data.explanation
+                )
+                db.add(choice)
+
+            savepoint.commit()  # Commit this question's savepoint
+            imported += 1
+
+        except Exception as e:
+            savepoint.rollback()  # Rollback only this question
+            errors.append(f"Question {idx}: {str(e)}")
+            failed += 1
+
+    # Commit all successful imports
+    try:
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to commit imports: {str(e)}"
+        )
+
+    # Build validation summary
+    validation_summary = {
+        "total_questions": len(import_data.questions),
+        "imported": imported,
+        "failed": failed,
+        "errors": errors[:10],  # Limit to first 10 errors
+        "has_more_errors": len(errors) > 10
+    }
+
+    return BulkQuestionImportResponse(
+        course_id=course_id,
+        questions_imported=imported,
+        questions_failed=failed,
+        validation_summary=validation_summary
     )

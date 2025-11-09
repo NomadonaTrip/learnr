@@ -599,3 +599,274 @@ class TestAdminCoursePublishing:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "knowledge area" in response.json()["detail"].lower()
+
+
+@pytest.mark.integration
+class TestBulkQuestionImport:
+    """Test bulk question import endpoint."""
+
+    def test_bulk_import_success(self, admin_authenticated_client, db):
+        """Test successful bulk question import."""
+        from app.models.course import Course, KnowledgeArea
+
+        # Create a course with KA
+        course = Course(
+            course_code="TEST_IMPORT",
+            course_name="Test Import Course",
+            version="v1",
+            status="draft",
+            passing_score_percentage=70
+        )
+        db.add(course)
+        db.commit()
+        db.refresh(course)
+
+        # Add KA
+        ka = KnowledgeArea(
+            course_id=course.course_id,
+            ka_code="KA1",
+            ka_name="Knowledge Area 1",
+            ka_number=1,
+            weight_percentage=Decimal("100.00")
+        )
+        db.add(ka)
+        db.commit()
+
+        # Bulk import 3 questions
+        response = admin_authenticated_client.post(
+            f"/v1/admin/courses/{course.course_id}/questions/bulk",
+            json={
+                "questions": [
+                    {
+                        "ka_code": "KA1",
+                        "question_text": "What is the capital of France?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "Paris", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "London", "is_correct": False, "choice_order": 2},
+                            {"choice_text": "Berlin", "is_correct": False, "choice_order": 3},
+                            {"choice_text": "Madrid", "is_correct": False, "choice_order": 4}
+                        ]
+                    },
+                    {
+                        "ka_code": "KA1",
+                        "question_text": "What is 2 + 2?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.2,
+                        "source": "custom",
+                        "answer_choices": [
+                            {"choice_text": "3", "is_correct": False, "choice_order": 1},
+                            {"choice_text": "4", "is_correct": True, "choice_order": 2},
+                            {"choice_text": "5", "is_correct": False, "choice_order": 3}
+                        ]
+                    },
+                    {
+                        "ka_code": "KA1",
+                        "question_text": "Is Python a programming language?",
+                        "question_type": "true_false",
+                        "difficulty": 0.1,
+                        "source": "generated",
+                        "answer_choices": [
+                            {"choice_text": "True", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "False", "is_correct": False, "choice_order": 2}
+                        ]
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        data = response.json()
+
+        # Verify response
+        assert data["course_id"] == str(course.course_id)
+        assert data["questions_imported"] == 3
+        assert data["questions_failed"] == 0
+        assert data["validation_summary"]["total_questions"] == 3
+        assert data["validation_summary"]["imported"] == 3
+        assert data["validation_summary"]["failed"] == 0
+
+        # Verify questions were created in database
+        from app.models.question import Question
+        questions = db.query(Question).filter(Question.course_id == course.course_id).all()
+        assert len(questions) == 3
+
+    def test_bulk_import_invalid_ka_code(self, admin_authenticated_client, test_cbap_course, db):
+        """Test bulk import with invalid KA code."""
+        response = admin_authenticated_client.post(
+            f"/v1/admin/courses/{test_cbap_course.course_id}/questions/bulk",
+            json={
+                "questions": [
+                    {
+                        "ka_code": "INVALID_KA",
+                        "question_text": "Test question?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "A", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "B", "is_correct": False, "choice_order": 2}
+                        ]
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        data = response.json()
+
+        assert data["questions_imported"] == 0
+        assert data["questions_failed"] == 1
+        assert len(data["validation_summary"]["errors"]) >= 1
+        assert "Invalid KA code" in data["validation_summary"]["errors"][0]
+
+    def test_bulk_import_mixed_success_failure(self, admin_authenticated_client, db):
+        """Test bulk import with both valid and invalid questions."""
+        from app.models.course import Course, KnowledgeArea
+
+        # Create course with KA
+        course = Course(
+            course_code="MIXED",
+            course_name="Mixed Test",
+            version="v1",
+            status="draft",
+            passing_score_percentage=70
+        )
+        db.add(course)
+        db.commit()
+        db.refresh(course)
+
+        ka = KnowledgeArea(
+            course_id=course.course_id,
+            ka_code="VALID_KA",
+            ka_name="Valid KA",
+            ka_number=1,
+            weight_percentage=Decimal("100.00")
+        )
+        db.add(ka)
+        db.commit()
+
+        # Import with mixed valid/invalid
+        response = admin_authenticated_client.post(
+            f"/v1/admin/courses/{course.course_id}/questions/bulk",
+            json={
+                "questions": [
+                    {
+                        "ka_code": "VALID_KA",
+                        "question_text": "Valid question?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "A", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "B", "is_correct": False, "choice_order": 2}
+                        ]
+                    },
+                    {
+                        "ka_code": "INVALID_KA",
+                        "question_text": "Invalid question?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "A", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "B", "is_correct": False, "choice_order": 2}
+                        ]
+                    },
+                    {
+                        "ka_code": "VALID_KA",
+                        "question_text": "Another valid question?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.3,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "X", "is_correct": False, "choice_order": 1},
+                            {"choice_text": "Y", "is_correct": True, "choice_order": 2}
+                        ]
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == status.HTTP_201_CREATED
+        data = response.json()
+
+        assert data["questions_imported"] == 2
+        assert data["questions_failed"] == 1
+        assert data["validation_summary"]["total_questions"] == 3
+
+        # Verify only valid questions were created
+        from app.models.question import Question
+        questions = db.query(Question).filter(Question.course_id == course.course_id).all()
+        assert len(questions) == 2
+
+    def test_bulk_import_course_not_found(self, admin_authenticated_client):
+        """Test bulk import for non-existent course."""
+        response = admin_authenticated_client.post(
+            "/v1/admin/courses/00000000-0000-0000-0000-000000000000/questions/bulk",
+            json={
+                "questions": [
+                    {
+                        "ka_code": "KA1",
+                        "question_text": "What is this test question?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "A", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "B", "is_correct": False, "choice_order": 2}
+                        ]
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_bulk_import_validation_errors(self, admin_authenticated_client, test_cbap_course, db):
+        """Test request validation (invalid question data)."""
+        # Test: No correct answer
+        response = admin_authenticated_client.post(
+            f"/v1/admin/courses/{test_cbap_course.course_id}/questions/bulk",
+            json={
+                "questions": [
+                    {
+                        "ka_code": "REQUIREMENTS_ANALYSIS",
+                        "question_text": "Test?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "A", "is_correct": False, "choice_order": 1},
+                            {"choice_text": "B", "is_correct": False, "choice_order": 2}
+                        ]
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+        # Test: Two correct answers
+        response = admin_authenticated_client.post(
+            f"/v1/admin/courses/{test_cbap_course.course_id}/questions/bulk",
+            json={
+                "questions": [
+                    {
+                        "ka_code": "REQUIREMENTS_ANALYSIS",
+                        "question_text": "Test?",
+                        "question_type": "multiple_choice",
+                        "difficulty": 0.5,
+                        "source": "vendor",
+                        "answer_choices": [
+                            {"choice_text": "A", "is_correct": True, "choice_order": 1},
+                            {"choice_text": "B", "is_correct": True, "choice_order": 2}
+                        ]
+                    }
+                ]
+            }
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY

@@ -4,7 +4,7 @@ Pydantic schemas for Admin Dashboard API.
 These schemas are used exclusively for admin-only endpoints.
 """
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from datetime import datetime, date
 from decimal import Decimal
 from uuid import UUID
@@ -187,6 +187,53 @@ class PublishCourseResponse(BaseModel):
 # ============================================================================
 # Bulk Question Import Schemas
 # ============================================================================
+
+class BulkAnswerChoiceRequest(BaseModel):
+    """Answer choice in bulk import."""
+    choice_text: str = Field(min_length=1, max_length=1000)
+    is_correct: bool
+    choice_order: int = Field(ge=1, le=6, description="Display order (1-6)")
+    explanation: Optional[str] = Field(None, max_length=1000)
+
+
+class BulkQuestionRequest(BaseModel):
+    """Single question in bulk import."""
+    ka_code: str = Field(max_length=20, description="Knowledge area code")
+    domain_code: Optional[str] = Field(None, max_length=20, description="Optional domain code")
+    question_text: str = Field(min_length=10, max_length=5000)
+    question_type: str = Field(default="multiple_choice", description="'multiple_choice' or 'true_false'")
+    difficulty: Decimal = Field(ge=0, le=1, description="Difficulty (0.0-1.0)")
+    source: str = Field(default="vendor", description="'vendor', 'generated', or 'custom'")
+    answer_choices: List[BulkAnswerChoiceRequest] = Field(min_items=2, max_items=6)
+
+    @field_validator('question_type')
+    @classmethod
+    def validate_question_type(cls, v):
+        if v not in ('multiple_choice', 'true_false'):
+            raise ValueError("question_type must be 'multiple_choice' or 'true_false'")
+        return v
+
+    @field_validator('source')
+    @classmethod
+    def validate_source(cls, v):
+        if v not in ('vendor', 'generated', 'custom'):
+            raise ValueError("source must be 'vendor', 'generated', or 'custom'")
+        return v
+
+    @field_validator('answer_choices')
+    @classmethod
+    def validate_answer_choices(cls, v):
+        """Ensure exactly one correct answer."""
+        correct_count = sum(1 for choice in v if choice.is_correct)
+        if correct_count != 1:
+            raise ValueError(f"Exactly one answer must be correct, got {correct_count}")
+        return v
+
+
+class BulkQuestionImportRequest(BaseModel):
+    """Request for POST /v1/admin/courses/{course_id}/questions/bulk."""
+    questions: List[BulkQuestionRequest] = Field(min_items=1, max_items=500)
+
 
 class BulkQuestionImportResponse(BaseModel):
     """Response for POST /v1/admin/courses/{course_id}/questions/bulk."""
