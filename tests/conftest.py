@@ -480,13 +480,14 @@ def test_question_attempts(db, test_user_with_profile, test_questions):
 # Additional fixtures for mock exam tests
 @pytest.fixture
 def test_questions_full(db, test_cbap_course):
-    """Create 120+ questions for mock exam testing."""
+    """Create 240+ questions for mock exam testing."""
     questions = []
     kas = db.query(KnowledgeArea).filter_by(course_id=test_cbap_course.course_id).all()
 
-    # Create 20 questions per KA (6 KAs = 120 questions)
+    # Create 40 questions per KA (6 KAs = 240 questions)
+    # Mock exams need 120 questions distributed by KA weight (max 30% = 36 questions)
     for ka in kas:
-        for i in range(20):
+        for i in range(40):
             # Vary difficulty
             difficulty = Decimal(str(0.3 + (i % 3) * 0.2))  # 0.3, 0.5, 0.7
 

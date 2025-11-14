@@ -18,14 +18,6 @@ class TestMockExamCreation:
         """Test successful mock exam creation."""
         response = authenticated_client_with_profile.post("/v1/exams/mock")
 
-        # DEBUG: Print response details if not successful
-        if response.status_code != status.HTTP_201_CREATED:
-            print(f"\n{'='*60}")
-            print(f"DEBUG: Mock exam creation failed")
-            print(f"Status Code: {response.status_code}")
-            print(f"Response Body: {response.json()}")
-            print(f"{'='*60}\n")
-
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
 
@@ -36,7 +28,6 @@ class TestMockExamCreation:
         assert "started_at" in data
         assert "instructions" in data
 
-    @pytest.mark.skip(reason="Debugging: isolating failures - will enable one by one")
     def test_create_mock_exam_proper_ka_distribution(self, authenticated_client_with_profile, test_cbap_course, test_questions_full, db):
         """Test that mock exam distributes questions by KA weight."""
         response = authenticated_client_with_profile.post("/v1/exams/mock")
@@ -61,7 +52,6 @@ class TestMockExamCreation:
         # For CBAP: BA Planning 15%, Elicitation 20%, Req Lifecycle 25%, etc.
         assert len(ka_counts) > 0  # Should have questions from multiple KAs
 
-    @pytest.mark.skip(reason="Debugging: isolating failures - will enable one by one")
     def test_create_mock_exam_avoids_recent_questions(self, authenticated_client_with_profile, test_questions_full, test_question_attempts_recent, db):
         """Test that mock exam avoids recently seen questions."""
         # Get recent question IDs
