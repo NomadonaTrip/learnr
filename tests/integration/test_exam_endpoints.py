@@ -18,6 +18,14 @@ class TestMockExamCreation:
         """Test successful mock exam creation."""
         response = authenticated_client_with_profile.post("/v1/exams/mock")
 
+        # DEBUG: Print response details if not successful
+        if response.status_code != status.HTTP_201_CREATED:
+            print(f"\n{'='*60}")
+            print(f"DEBUG: Mock exam creation failed")
+            print(f"Status Code: {response.status_code}")
+            print(f"Response Body: {response.json()}")
+            print(f"{'='*60}\n")
+
         assert response.status_code == status.HTTP_201_CREATED
         data = response.json()
 
