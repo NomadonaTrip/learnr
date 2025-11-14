@@ -385,6 +385,9 @@ def authenticated_client_with_profile(db, test_user_with_profile):
 
     app.dependency_overrides[get_db] = override_get_db
 
+    # Expire all objects to force fresh queries from database
+    db.expire_all()
+
     token = create_access_token({"sub": test_user_with_profile.user_id, "role": test_user_with_profile.role})
 
     with TestClient(app) as test_client:
