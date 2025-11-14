@@ -480,14 +480,16 @@ def test_question_attempts(db, test_user_with_profile, test_questions):
 # Additional fixtures for mock exam tests
 @pytest.fixture
 def test_questions_full(db, test_cbap_course):
-    """Create 240+ questions for mock exam testing."""
+    """Create 240+ questions for mock exam testing (interleaved across KAs)."""
     questions = []
     kas = db.query(KnowledgeArea).filter_by(course_id=test_cbap_course.course_id).all()
 
     # Create 40 questions per KA (6 KAs = 240 questions)
+    # INTERLEAVED: Questions distributed round-robin across KAs
+    # This ensures recent attempts (0-29) don't deplete a single KA
     # Mock exams need 120 questions distributed by KA weight (max 30% = 36 questions)
-    for ka in kas:
-        for i in range(40):
+    for i in range(40):  # 40 rounds
+        for ka in kas:  # Each KA gets one question per round
             # Vary difficulty
             difficulty = Decimal(str(0.3 + (i % 3) * 0.2))  # 0.3, 0.5, 0.7
 
@@ -594,7 +596,7 @@ def test_question_attempts_recent(db, test_user_with_profile, test_questions_ful
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="practice",
-        total_questions=30,
+        total_questions=24,
         is_completed=False
     )
     db.add(session)
@@ -602,9 +604,10 @@ def test_question_attempts_recent(db, test_user_with_profile, test_questions_ful
     db.refresh(session)
 
     attempts = []
-    # Create 30 recent attempts (within last 50 questions limit)
-    # Fewer attempts to ensure each KA has enough unused questions for mock exam
-    for i, question in enumerate(test_questions_full[:30]):
+    # Create 24 recent attempts (4 complete rounds with interleaved questions)
+    # With interleaved creation: 24 questions = 4 per KA
+    # Each KA: 40 total - 4 recent = 36 available (matches max need of 30% weight)
+    for i, question in enumerate(test_questions_full[:24]):
         correct_choice = db.query(AnswerChoice).filter_by(
             question_id=question.question_id,
             is_correct=True
