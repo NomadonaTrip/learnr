@@ -179,3 +179,29 @@ class ContentGenerationRequest(BaseModel):
     topic: str = Field(..., min_length=3)
     difficulty_level: str = Field(..., pattern="^(basic|intermediate|advanced)$")
     word_count_target: int = Field(default=500, ge=100, le=2000)
+
+
+class ContentRecommendationRequest(BaseModel):
+    """
+    Request for personalized content recommendations.
+
+    Supports multiple recommendation strategies:
+    - adaptive: Based on user competency (default)
+    - recent_mistakes: Based on recent incorrect answers
+    - ka_specific: Content from specific KA
+    """
+    strategy: str = Field(default="adaptive", pattern="^(adaptive|recent_mistakes|ka_specific)$")
+    ka_id: Optional[UUID] = None  # Required for ka_specific strategy
+    limit: int = Field(default=5, ge=1, le=20)
+
+
+class ContentRecommendationResponse(BaseModel):
+    """
+    Content recommendation response with metadata.
+
+    Includes recommended chunks and context about why they were recommended.
+    """
+    strategy_used: str
+    total_recommendations: int
+    recommendations: List[ContentChunkWithMetricsResponse]
+    context: Optional[dict] = None  # Additional metadata (e.g., weak KAs)
