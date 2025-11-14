@@ -594,7 +594,7 @@ def test_question_attempts_recent(db, test_user_with_profile, test_questions_ful
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="practice",
-        total_questions=60,
+        total_questions=30,
         is_completed=False
     )
     db.add(session)
@@ -602,8 +602,9 @@ def test_question_attempts_recent(db, test_user_with_profile, test_questions_ful
     db.refresh(session)
 
     attempts = []
-    # Create 60 recent attempts (within last 50 questions limit)
-    for i, question in enumerate(test_questions_full[:60]):
+    # Create 30 recent attempts (within last 50 questions limit)
+    # Fewer attempts to ensure each KA has enough unused questions for mock exam
+    for i, question in enumerate(test_questions_full[:30]):
         correct_choice = db.query(AnswerChoice).filter_by(
             question_id=question.question_id,
             is_correct=True
