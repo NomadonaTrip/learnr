@@ -188,24 +188,24 @@ class TestContentChunkRetrieval:
         assert "helpfulness_score" in data
         assert "efficacy_rate" in data
 
-    def test_get_content_chunk_logs_reading(self, authenticated_client, test_content_chunks, db_session):
+    def test_get_content_chunk_logs_reading(self, authenticated_client, test_content_chunks, db):
         """Test that accessing a chunk logs it as consumed."""
         from app.models.learning import ReadingConsumed
 
         chunk_id = test_content_chunks[0].chunk_id
 
         # Get initial count
-        initial_count = db_session.query(ReadingConsumed).count()
+        initial_count = db.query(ReadingConsumed).count()
 
         # Access chunk
         response = authenticated_client.get(f"/v1/content/chunks/{chunk_id}")
         assert response.status_code == status.HTTP_200_OK
 
         # Verify reading was logged
-        final_count = db_session.query(ReadingConsumed).count()
+        final_count = db.query(ReadingConsumed).count()
         assert final_count == initial_count + 1
 
-    def test_get_content_chunk_not_duplicate_within_hour(self, authenticated_client, test_content_chunks, db_session):
+    def test_get_content_chunk_not_duplicate_within_hour(self, authenticated_client, test_content_chunks, db):
         """Test that accessing same chunk within an hour doesn't create duplicate log."""
         from app.models.learning import ReadingConsumed
 
@@ -215,13 +215,13 @@ class TestContentChunkRetrieval:
         response1 = authenticated_client.get(f"/v1/content/chunks/{chunk_id}")
         assert response1.status_code == status.HTTP_200_OK
 
-        initial_count = db_session.query(ReadingConsumed).count()
+        initial_count = db.query(ReadingConsumed).count()
 
         response2 = authenticated_client.get(f"/v1/content/chunks/{chunk_id}")
         assert response2.status_code == status.HTTP_200_OK
 
         # Should not create duplicate
-        final_count = db_session.query(ReadingConsumed).count()
+        final_count = db.query(ReadingConsumed).count()
         assert final_count == initial_count
 
     def test_get_content_chunk_not_found(self, authenticated_client):

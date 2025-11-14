@@ -101,7 +101,7 @@ def select_questions_for_mock_exam(
     # Get recent question IDs to avoid
     recent_attempts = db.query(QuestionAttempt).filter(
         QuestionAttempt.user_id == str(user_id)
-    ).order_by(QuestionAttempt.created_at.desc()).limit(50).all()
+    ).order_by(QuestionAttempt.attempted_at.desc()).limit(50).all()
 
     recent_question_ids = {attempt.question_id for attempt in recent_attempts}
 

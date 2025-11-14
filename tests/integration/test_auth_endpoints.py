@@ -581,7 +581,7 @@ class TestUserProfileManagement:
 
         # Verify account is deactivated (try to access GET /me should fail)
         me_response = authenticated_client.get("/v1/auth/me")
-        assert me_response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert me_response.status_code == status.HTTP_403_FORBIDDEN
 
     def test_delete_user_account_unauthenticated_fails(self, client):
         """Test deleting account without authentication fails."""
@@ -589,11 +589,11 @@ class TestUserProfileManagement:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_deleted_user_cannot_login(self, client, test_learner_user, db_session):
+    def test_deleted_user_cannot_login(self, client, test_learner_user, db):
         """Test that a deleted (deactivated) user cannot log in."""
         # First deactivate the user
         test_learner_user.is_active = False
-        db_session.commit()
+        db.commit()
 
         # Try to login
         response = client.post(
