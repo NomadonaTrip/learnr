@@ -414,6 +414,7 @@ def test_content_chunks(db, test_cbap_course):
                 source_section=f"Section {ka.ka_code}",
                 source_verified=True,
                 expert_reviewed=True,
+                review_status='approved',
                 is_active=True
             )
             db.add(chunk)
@@ -434,8 +435,8 @@ def test_question_attempts(db, test_user_with_profile, test_questions):
         user_id=test_user_with_profile.user_id,
         course_id=test_questions[0].course_id,
         session_type="practice",
-        target_question_count=10,
-        is_complete=False
+        total_questions=10,
+        is_completed=False
     )
     db.add(session)
     db.commit()
@@ -557,6 +558,7 @@ def test_content_chunks_with_feedback(db, test_cbap_course, test_user_with_profi
             source_document="BABOK v3",
             expert_reviewed=True,
             source_verified=True,
+            review_status='approved',
             is_active=True
         )
         db.add(chunk)
@@ -588,8 +590,8 @@ def test_question_attempts_recent(db, test_user_with_profile, test_questions_ful
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="practice",
-        target_question_count=60,
-        is_complete=False
+        total_questions=60,
+        is_completed=False
     )
     db.add(session)
     db.commit()
@@ -629,8 +631,8 @@ def test_completed_mock_exam(db, test_user_with_profile, test_questions_full):
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="mock_exam",
-        target_question_count=100,
-        is_complete=True
+        total_questions=100,
+        is_completed=True
     )
     db.add(session)
     db.commit()
@@ -676,8 +678,8 @@ def test_completed_mock_exam_passing(db, test_user_with_profile, test_questions_
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="mock_exam",
-        target_question_count=100,
-        is_complete=True
+        total_questions=100,
+        is_completed=True
     )
     db.add(session)
     db.commit()
@@ -722,8 +724,8 @@ def test_completed_mock_exam_failing(db, test_user_with_profile, test_questions_
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="mock_exam",
-        target_question_count=100,
-        is_complete=True
+        total_questions=100,
+        is_completed=True
     )
     db.add(session)
     db.commit()
@@ -766,8 +768,8 @@ def test_incomplete_mock_exam(db, test_user_with_profile, test_questions_full):
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="mock_exam",
-        target_question_count=100,
-        is_complete=False  # Incomplete
+        total_questions=100,
+        is_completed=False  # Incomplete
     )
     db.add(session)
     db.commit()
@@ -782,8 +784,8 @@ def test_practice_session(db, test_user_with_profile, test_questions):
         user_id=test_user_with_profile.user_id,
         course_id=test_questions[0].course_id,
         session_type="practice",  # Not mock_exam
-        target_question_count=10,
-        is_complete=True
+        total_questions=10,
+        is_completed=True
     )
     db.add(session)
     db.commit()
@@ -798,8 +800,8 @@ def other_user_mock_exam(db, test_admin_user, test_questions_full):
         user_id=test_admin_user.user_id,  # Different user
         course_id=test_questions_full[0].course_id,
         session_type="mock_exam",
-        target_question_count=100,
-        is_complete=True
+        total_questions=100,
+        is_completed=True
     )
     db.add(session)
     db.commit()
@@ -816,8 +818,8 @@ def test_completed_mock_exam_with_time(db, test_user_with_profile, test_question
         user_id=test_user_with_profile.user_id,
         course_id=test_questions_full[0].course_id,
         session_type="mock_exam",
-        target_question_count=100,
-        is_complete=True
+        total_questions=100,
+        is_completed=True
     )
     db.add(session)
     db.commit()

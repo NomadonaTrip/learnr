@@ -36,9 +36,13 @@ def get_user_weakest_knowledge_areas(
     Returns:
         List of dicts with ka_id and competency_score
     """
-    competencies = db.query(UserCompetency).filter(
-        UserCompetency.user_id == user_id,
-        UserCompetency.course_id == course_id
+    from app.models.course import KnowledgeArea
+
+    competencies = db.query(UserCompetency).join(
+        KnowledgeArea, UserCompetency.ka_id == KnowledgeArea.ka_id
+    ).filter(
+        UserCompetency.user_id == str(user_id),
+        KnowledgeArea.course_id == str(course_id)
     ).order_by(UserCompetency.competency_score.asc()).limit(limit).all()
 
     return [
@@ -279,8 +283,8 @@ def get_recommended_content(
         if ka_id is None:
             raise ValueError("ka_id required for KA-specific strategy")
         chunks = db.query(ContentChunk).filter(
-            ContentChunk.course_id == course_id,
-            ContentChunk.ka_id == ka_id,
+            ContentChunk.course_id == str(course_id),
+            ContentChunk.ka_id == str(ka_id),
             ContentChunk.is_active == True,
             ContentChunk.review_status == 'approved'
         ).order_by(

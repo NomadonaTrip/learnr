@@ -604,5 +604,5 @@ class TestUserProfileManagement:
             }
         )
 
-        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert response.status_code == status.HTTP_403_FORBIDDEN
         assert "inactive" in response.json()["detail"].lower()
