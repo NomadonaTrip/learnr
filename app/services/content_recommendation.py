@@ -12,7 +12,7 @@ Decision #76: Quality evaluation system.
 from typing import List, Optional, Dict
 from uuid import UUID
 from sqlalchemy.orm import Session
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, text
 from app.models.content import ContentChunk
 from app.models.learning import UserCompetency, QuestionAttempt
 from app.models.user import User

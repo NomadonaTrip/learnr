@@ -370,3 +370,104 @@ def admin_authenticated_client(db, test_admin_user):
         yield test_client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def authenticated_client_with_profile(db, test_user_with_profile):
+    """Return authenticated client with user profile."""
+    from app.services.auth import create_access_token
+
+    def override_get_db():
+        try:
+            yield db
+        finally:
+            pass
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    token = create_access_token({"sub": test_user_with_profile.user_id, "role": test_user_with_profile.role})
+
+    with TestClient(app) as test_client:
+        test_client.headers = {"Authorization": f"Bearer {token}"}
+        yield test_client
+
+    app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def test_content_chunks(db, test_cbap_course):
+    """Create test content chunks."""
+    from app.models.content import ContentChunk
+
+    chunks = []
+    kas = db.query(KnowledgeArea).filter_by(course_id=test_cbap_course.course_id).all()
+
+    for ka in kas[:3]:  # Create chunks for first 3 KAs
+        for i in range(2):  # 2 chunks per KA
+            chunk = ContentChunk(
+                course_id=test_cbap_course.course_id,
+                ka_id=ka.ka_id,
+                title=f"Content for {ka.ka_name} - Part {i+1}",
+                content_text=f"This is detailed content about {ka.ka_name}. " * 10,
+                content_type="text",
+                source="babok_v3",
+                source_url=f"https://example.com/{ka.ka_code}-{i+1}",
+                source_verified=True,
+                expert_reviewed=True,
+                is_active=True
+            )
+            db.add(chunk)
+            chunks.append(chunk)
+
+    db.commit()
+    return chunks
+
+
+@pytest.fixture
+def test_question_attempts(db, test_user_with_profile, test_questions):
+    """Create test question attempts."""
+    from app.models.learning import QuestionAttempt
+    from datetime import datetime, timedelta
+
+    # Create a practice session
+    session = Session(
+        user_id=test_user_with_profile.user_id,
+        course_id=test_questions[0].course_id,
+        session_type="practice",
+        target_question_count=10,
+        is_complete=False
+    )
+    db.add(session)
+    db.commit()
+    db.refresh(session)
+
+    attempts = []
+    # Create attempts for first 5 questions
+    for i, question in enumerate(test_questions[:5]):
+        # Get correct answer choice
+        correct_choice = db.query(AnswerChoice).filter_by(
+            question_id=question.question_id,
+            is_correct=True
+        ).first()
+
+        # Alternate between correct and incorrect
+        is_correct = (i % 2 == 0)
+        selected_choice = correct_choice if is_correct else db.query(AnswerChoice).filter_by(
+            question_id=question.question_id,
+            is_correct=False
+        ).first()
+
+        attempt = QuestionAttempt(
+            session_id=session.session_id,
+            user_id=test_user_with_profile.user_id,
+            question_id=question.question_id,
+            selected_choice_id=selected_choice.choice_id,
+            is_correct=is_correct,
+            time_spent_seconds=30 + i * 10,
+            created_at=datetime.utcnow() - timedelta(minutes=10-i)
+        )
+        db.add(attempt)
+        attempts.append(attempt)
+
+    db.commit()
+    return attempts

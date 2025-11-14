@@ -254,6 +254,7 @@ def update_current_user(
     if user_update.email is not None:
         # Check if email already exists (need to decrypt all emails)
         from app.utils.encryption import decrypt_field
+        from cryptography.fernet import InvalidToken
         for u in db.query(User).filter(User.user_id != current_user.user_id).all():
             try:
                 if decrypt_field(u._email).lower() == user_update.email.lower():
@@ -261,8 +262,12 @@ def update_current_user(
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Email already in use by another account"
                     )
-            except Exception:
+            except (InvalidToken, ValueError, TypeError):
+                # Skip users with corrupted email data
                 continue
+            except HTTPException:
+                # Re-raise HTTP exceptions (duplicate email)
+                raise
 
         current_user.email = user_update.email
         current_user.email_verified = False  # Require re-verification
@@ -317,7 +322,7 @@ def delete_current_user(
             user_id=str(current_user.user_id),
             ip_address=get_client_ip(request),
             user_agent=get_user_agent(request),
-            details={"reason": "user_requested_deletion"}
+            event_metadata={"reason": "user_requested_deletion"}
         )
 
     return {

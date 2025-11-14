@@ -126,14 +126,14 @@ class TestContentRecommendations:
     def test_get_recommendations_limit_bounds_validation(self, authenticated_client_with_profile):
         """Test limit parameter bounds validation."""
         # Too small
-        response = client.get(
+        response = authenticated_client_with_profile.get(
             "/v1/content/recommendations",
             params={"limit": 0}
         )
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
         # Too large
-        response = client.get(
+        response = authenticated_client_with_profile.get(
             "/v1/content/recommendations",
             params={"limit": 100}
         )
