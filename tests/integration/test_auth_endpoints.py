@@ -454,3 +454,155 @@ class TestAuthorizationByRole:
         admin_token = admin_response.json()["access_token"]
         admin_payload = jwt.decode(admin_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         assert admin_payload["role"] == "admin"
+
+
+@pytest.mark.integration
+class TestUserProfileManagement:
+    """Test user profile management endpoints (PATCH /users/me, DELETE /users/me)."""
+
+    def test_update_user_first_name_success(self, authenticated_client, test_learner_user):
+        """Test updating user's first name."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={"first_name": "UpdatedFirst"}
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["first_name"] == "UpdatedFirst"
+        assert data["last_name"] == test_learner_user.last_name  # Unchanged
+        assert data["email"] == test_learner_user.email  # Unchanged
+
+    def test_update_user_last_name_success(self, authenticated_client, test_learner_user):
+        """Test updating user's last name."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={"last_name": "UpdatedLast"}
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["last_name"] == "UpdatedLast"
+        assert data["first_name"] == test_learner_user.first_name  # Unchanged
+
+    def test_update_user_email_success(self, authenticated_client):
+        """Test updating user's email to a new unique email."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={"email": "newemail@test.com"}
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["email"] == "newemail@test.com"
+        # Email verification should be reset
+        assert data["email_verified"] is False
+
+    def test_update_user_email_duplicate_fails(self, authenticated_client, test_admin_user):
+        """Test updating email to an existing email fails."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={"email": test_admin_user.email}  # Already in use
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "already in use" in response.json()["detail"].lower()
+
+    def test_update_multiple_fields_success(self, authenticated_client):
+        """Test updating multiple fields at once."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={
+                "first_name": "NewFirst",
+                "last_name": "NewLast",
+                "email": "completely.new@test.com"
+            }
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert data["first_name"] == "NewFirst"
+        assert data["last_name"] == "NewLast"
+        assert data["email"] == "completely.new@test.com"
+
+    def test_update_with_no_fields_fails(self, authenticated_client):
+        """Test updating with no fields provided fails."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={}
+        )
+
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "no valid fields" in response.json()["detail"].lower()
+
+    def test_update_user_unauthenticated_fails(self, client):
+        """Test updating user without authentication fails."""
+        response = client.patch(
+            "/v1/auth/users/me",
+            json={"first_name": "Updated"}
+        )
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_update_role_silently_ignored_for_regular_users(self, authenticated_client, test_learner_user):
+        """Test that regular users cannot update their own role."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={
+                "first_name": "Updated",
+                "role": "admin"  # Should be ignored
+            }
+        )
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        # Role should remain unchanged
+        assert data["role"] == "learner"
+        # But first_name should be updated
+        assert data["first_name"] == "Updated"
+
+    def test_update_invalid_email_format(self, authenticated_client):
+        """Test updating with invalid email format fails."""
+        response = authenticated_client.patch(
+            "/v1/auth/users/me",
+            json={"email": "not-an-email"}
+        )
+
+        assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+
+    def test_delete_user_account_success(self, authenticated_client, test_learner_user):
+        """Test deleting user account (soft delete)."""
+        response = authenticated_client.delete("/v1/auth/users/me")
+
+        assert response.status_code == status.HTTP_200_OK
+        data = response.json()
+        assert "deactivated" in data["message"].lower()
+        assert "details" in data
+
+        # Verify account is deactivated (try to access GET /me should fail)
+        me_response = authenticated_client.get("/v1/auth/me")
+        assert me_response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_delete_user_account_unauthenticated_fails(self, client):
+        """Test deleting account without authentication fails."""
+        response = client.delete("/v1/auth/users/me")
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_deleted_user_cannot_login(self, client, test_learner_user, db_session):
+        """Test that a deleted (deactivated) user cannot log in."""
+        # First deactivate the user
+        test_learner_user.is_active = False
+        db_session.commit()
+
+        # Try to login
+        response = client.post(
+            "/v1/auth/login",
+            json={
+                "email": "learner@test.com",
+                "password": "Test123Pass"
+            }
+        )
+
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+        assert "inactive" in response.json()["detail"].lower()

@@ -13,7 +13,7 @@ from app.schemas.auth import (
     UserRegister, UserLogin, Token, PasswordChange,
     PasswordResetRequest, PasswordResetConfirm, RefreshTokenRequest
 )
-from app.schemas.user import UserResponse
+from app.schemas.user import UserResponse, UserUpdate, UserProfileUpdate
 from app.services.auth import (
     authenticate_user, create_access_token, create_refresh_token,
     verify_token, change_password
@@ -217,10 +217,113 @@ def get_current_user_info(
 ):
     """
     Get current user information from JWT token.
-    
+
     Useful for frontend to verify token and get user data.
     """
     return current_user
+
+
+@router.patch("/users/me", response_model=UserResponse)
+def update_current_user(
+    user_update: UserUpdate,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Update current user's account information.
+
+    Allows users to update their own first_name, last_name, and email.
+    Admins can be updated via admin endpoints.
+
+    Email uniqueness is validated before update.
+    """
+    # Track what's being updated
+    updated_fields = []
+
+    # Update first_name
+    if user_update.first_name is not None:
+        current_user.first_name = user_update.first_name
+        updated_fields.append("first_name")
+
+    # Update last_name
+    if user_update.last_name is not None:
+        current_user.last_name = user_update.last_name
+        updated_fields.append("last_name")
+
+    # Update email (check uniqueness)
+    if user_update.email is not None:
+        # Check if email already exists (need to decrypt all emails)
+        from app.utils.encryption import decrypt_field
+        for u in db.query(User).filter(User.user_id != current_user.user_id).all():
+            try:
+                if decrypt_field(u._email).lower() == user_update.email.lower():
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Email already in use by another account"
+                    )
+            except Exception:
+                continue
+
+        current_user.email = user_update.email
+        current_user.email_verified = False  # Require re-verification
+        updated_fields.append("email")
+
+    # Role and is_active can only be updated by admins via admin endpoints
+    # Silently ignore these fields for regular users
+
+    if not updated_fields:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No valid fields to update"
+        )
+
+    db.commit()
+    db.refresh(current_user)
+
+    return current_user
+
+
+@router.delete("/users/me", status_code=status.HTTP_200_OK)
+def delete_current_user(
+    current_user: User = Depends(get_current_active_user),
+    request: Request = None,
+    db: Session = Depends(get_db)
+):
+    """
+    Delete current user account (GDPR compliance).
+
+    Decision #59: GDPR compliance.
+
+    Process:
+    1. Mark account as inactive immediately
+    2. User can contact support within 30 days to reactivate
+    3. After 30 days, account data should be anonymized (admin process)
+
+    Note: This is a soft delete. Account is deactivated but data is retained
+    for potential recovery. Full anonymization is handled by admin processes.
+    """
+    # Deactivate account
+    current_user.is_active = False
+
+    db.commit()
+
+    # Log security event
+    from app.services.auth import log_security_event
+    if request:
+        log_security_event(
+            db=db,
+            event_type="account_deactivated",
+            success=True,
+            user_id=str(current_user.user_id),
+            ip_address=get_client_ip(request),
+            user_agent=get_user_agent(request),
+            details={"reason": "user_requested_deletion"}
+        )
+
+    return {
+        "message": "Account deactivated successfully",
+        "details": "Your account has been deactivated. Contact support within 30 days if you wish to reactivate your account."
+    }
 
 
 @router.post("/change-password")
