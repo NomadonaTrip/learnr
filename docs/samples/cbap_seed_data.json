@@ -1,0 +1,658 @@
+{
+  "course": {
+    "course_code": "CBAP",
+    "course_name": "Certified Business Analysis Professional",
+    "version": "v3.0",
+    "description": "The CBAP certification is designed for business analysis professionals with extensive experience in business analysis. Based on the BABOK Guide v3, it validates your knowledge and expertise in the business analysis discipline.",
+    "passing_score_percentage": 70,
+    "exam_duration_minutes": 210,
+    "total_questions": 120,
+    "min_questions_required": 200,
+    "min_chunks_required": 50,
+    "status": "draft"
+  },
+  "knowledge_areas": [
+    {
+      "ka_code": "BA_PLANNING",
+      "ka_name": "Business Analysis Planning and Monitoring",
+      "ka_number": 1,
+      "weight_percentage": 15,
+      "description": "Defines how business analysts determine which activities are necessary in order to complete a business analysis effort. It covers identifying stakeholders, selecting techniques, and defining the approach for requirements and design.",
+      "domains": [
+        {
+          "domain_code": "PLAN_APPROACH",
+          "domain_name": "Plan Business Analysis Approach",
+          "domain_number": 1,
+          "description": "Define and select the appropriate methodology and formality for business analysis activities"
+        },
+        {
+          "domain_code": "STAKEHOLDER_ENG",
+          "domain_name": "Plan Stakeholder Engagement",
+          "domain_number": 2,
+          "description": "Understand stakeholder needs, identify appropriate communication methods, and determine level of engagement"
+        },
+        {
+          "domain_code": "GOVERNANCE",
+          "domain_name": "Plan Business Analysis Governance",
+          "domain_number": 3,
+          "description": "Define decision-making processes, change control, and approval authorities"
+        },
+        {
+          "domain_code": "INFO_MGMT",
+          "domain_name": "Plan Business Analysis Information Management",
+          "domain_number": 4,
+          "description": "Develop approach for storing and accessing BA information throughout the initiative"
+        }
+      ]
+    },
+    {
+      "ka_code": "ELICITATION",
+      "ka_name": "Elicitation and Collaboration",
+      "ka_number": 2,
+      "weight_percentage": 20,
+      "description": "Describes the tasks that business analysts perform to obtain information from stakeholders and confirm the results. It covers preparing for elicitation, conducting activities, and managing stakeholder collaboration.",
+      "domains": [
+        {
+          "domain_code": "PREP_ELICIT",
+          "domain_name": "Prepare for Elicitation",
+          "domain_number": 1,
+          "description": "Understand the scope, select techniques, and schedule activities"
+        },
+        {
+          "domain_code": "CONDUCT_ELICIT",
+          "domain_name": "Conduct Elicitation",
+          "domain_number": 2,
+          "description": "Draw out, explore, and identify information from stakeholders"
+        },
+        {
+          "domain_code": "CONFIRM_RESULTS",
+          "domain_name": "Confirm Elicitation Results",
+          "domain_number": 3,
+          "description": "Validate that stakeholders have a shared understanding of outcomes"
+        },
+        {
+          "domain_code": "COMMUNICATE",
+          "domain_name": "Communicate Business Analysis Information",
+          "domain_number": 4,
+          "description": "Ensure stakeholders have information they need when they need it"
+        },
+        {
+          "domain_code": "COLLABORATION",
+          "domain_name": "Manage Stakeholder Collaboration",
+          "domain_number": 5,
+          "description": "Encourage stakeholders to work toward a common goal"
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_LIFECYCLE",
+      "ka_name": "Requirements Life Cycle Management",
+      "ka_number": 3,
+      "weight_percentage": 25,
+      "description": "Describes the tasks that business analysts perform to manage and maintain requirements and design information from inception to retirement. This includes tracing, maintaining, prioritizing, and assessing changes to requirements.",
+      "domains": [
+        {
+          "domain_code": "TRACE_REQ",
+          "domain_name": "Trace Requirements",
+          "domain_number": 1,
+          "description": "Ensure requirements and designs are aligned to one another and to business objectives"
+        },
+        {
+          "domain_code": "MAINTAIN_REQ",
+          "domain_name": "Maintain Requirements",
+          "domain_number": 2,
+          "description": "Retain requirement accuracy and consistency throughout the change process"
+        },
+        {
+          "domain_code": "PRIORITIZE_REQ",
+          "domain_name": "Prioritize Requirements",
+          "domain_number": 3,
+          "description": "Rank requirements based on their relative value and urgency"
+        },
+        {
+          "domain_code": "ASSESS_CHANGES",
+          "domain_name": "Assess Requirements Changes",
+          "domain_number": 4,
+          "description": "Evaluate the implications of proposed changes to requirements"
+        },
+        {
+          "domain_code": "APPROVE_REQ",
+          "domain_name": "Approve Requirements",
+          "domain_number": 5,
+          "description": "Obtain agreement from stakeholders on the correctness of requirements"
+        }
+      ]
+    },
+    {
+      "ka_code": "STRATEGY_ANALYSIS",
+      "ka_name": "Strategy Analysis",
+      "ka_number": 4,
+      "weight_percentage": 10,
+      "description": "Defines the business analysis work that must be performed to identify a need of strategic or tactical importance, enable the enterprise to address that need, and align the change strategy with the current enterprise direction.",
+      "domains": [
+        {
+          "domain_code": "ANALYZE_STATE",
+          "domain_name": "Analyze Current State",
+          "domain_number": 1,
+          "description": "Understand the current state of the enterprise relative to the business need"
+        },
+        {
+          "domain_code": "DEFINE_FUTURE",
+          "domain_name": "Define Future State",
+          "domain_number": 2,
+          "description": "Determine the future state that addresses the business need"
+        },
+        {
+          "domain_code": "ASSESS_RISKS",
+          "domain_name": "Assess Risks",
+          "domain_number": 3,
+          "description": "Identify and analyze risks to the value of the initiative"
+        },
+        {
+          "domain_code": "CHANGE_STRATEGY",
+          "domain_name": "Define Change Strategy",
+          "domain_number": 4,
+          "description": "Develop and assess approaches to transition from current to future state"
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_ANALYSIS",
+      "ka_name": "Requirements Analysis and Design Definition",
+      "ka_number": 5,
+      "weight_percentage": 20,
+      "description": "Describes how business analysts progressively elaborate and refine requirements and designs. It covers modeling requirements, verifying and validating them, and defining solution scope and requirements architecture.",
+      "domains": [
+        {
+          "domain_code": "SPECIFY_REQ",
+          "domain_name": "Specify and Model Requirements",
+          "domain_number": 1,
+          "description": "Represent requirements in various formats to facilitate analysis"
+        },
+        {
+          "domain_code": "VERIFY_REQ",
+          "domain_name": "Verify Requirements",
+          "domain_number": 2,
+          "description": "Ensure requirements are of sufficient quality to be usable"
+        },
+        {
+          "domain_code": "VALIDATE_REQ",
+          "domain_name": "Validate Requirements",
+          "domain_number": 3,
+          "description": "Ensure requirements deliver business value and support business goals"
+        },
+        {
+          "domain_code": "DEFINE_ARCH",
+          "domain_name": "Define Requirements Architecture",
+          "domain_number": 4,
+          "description": "Ensure sets of requirements are structured and organized"
+        },
+        {
+          "domain_code": "DEFINE_OPTIONS",
+          "domain_name": "Define Design Options",
+          "domain_number": 5,
+          "description": "Identify potential solution approaches that meet business needs"
+        },
+        {
+          "domain_code": "RECOMMEND",
+          "domain_name": "Analyze Potential Value and Recommend Solution",
+          "domain_number": 6,
+          "description": "Assess each design option and recommend the best approach"
+        }
+      ]
+    },
+    {
+      "ka_code": "SOLUTION_EVAL",
+      "ka_name": "Solution Evaluation",
+      "ka_number": 6,
+      "weight_percentage": 10,
+      "description": "Defines how business analysts assess the performance of and value delivered by a solution in use by the enterprise, and recommend removal of barriers or constraints that prevent the full realization of value.",
+      "domains": [
+        {
+          "domain_code": "MEASURE_PERF",
+          "domain_name": "Measure Solution Performance",
+          "domain_number": 1,
+          "description": "Assess how well the solution meets business needs and objectives"
+        },
+        {
+          "domain_code": "ANALYZE_PERF",
+          "domain_name": "Analyze Performance Measures",
+          "domain_number": 2,
+          "description": "Interpret results and investigate variances, shortfalls, or opportunities"
+        },
+        {
+          "domain_code": "ASSESS_LIMITS",
+          "domain_name": "Assess Solution Limitations",
+          "domain_number": 3,
+          "description": "Identify factors that restrict the full realization of value"
+        },
+        {
+          "domain_code": "IMPROVEMENTS",
+          "domain_name": "Assess Enterprise Limitations",
+          "domain_number": 4,
+          "description": "Determine organizational factors that may limit solution effectiveness"
+        },
+        {
+          "domain_code": "RECOMMEND_IMP",
+          "domain_name": "Recommend Actions to Increase Solution Value",
+          "domain_number": 5,
+          "description": "Propose changes to improve solution performance and value delivery"
+        }
+      ]
+    }
+  ],
+  "sample_questions": [
+    {
+      "ka_code": "BA_PLANNING",
+      "domain_code": "PLAN_APPROACH",
+      "question_text": "Which factor should be considered when selecting a business analysis approach for a project?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "The culture, preferences, and experience of the organization and team",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "The business analysis approach must align with organizational culture, team capabilities, and preferences to be effective."
+        },
+        {
+          "choice_text": "The color scheme of project documentation",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Documentation formatting is not a factor in selecting the BA approach."
+        },
+        {
+          "choice_text": "The office location of team members",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "While location may affect collaboration methods, it's not a primary factor in selecting the overall BA approach."
+        },
+        {
+          "choice_text": "The project manager's vacation schedule",
+          "is_correct": false,
+          "choice_order": 4,
+          "explanation": "Individual schedules don't determine the fundamental BA approach."
+        }
+      ]
+    },
+    {
+      "ka_code": "BA_PLANNING",
+      "domain_code": "STAKEHOLDER_ENG",
+      "question_text": "What is the primary purpose of stakeholder analysis in business analysis planning?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "To identify stakeholders, understand their characteristics, and determine the best approach to engage them",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Stakeholder analysis helps understand who needs to be involved, their influence, and how best to work with them."
+        },
+        {
+          "choice_text": "To eliminate stakeholders who disagree with the project",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "The goal is to engage all relevant stakeholders, not eliminate those with differing views."
+        },
+        {
+          "choice_text": "To create an organizational chart",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "While org structure may inform stakeholder analysis, creating an org chart is not its primary purpose."
+        }
+      ]
+    },
+    {
+      "ka_code": "ELICITATION",
+      "domain_code": "PREP_ELICIT",
+      "question_text": "Before conducting elicitation, what should a business analyst do first?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.4,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Understand the scope of elicitation and select appropriate techniques",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Preparation includes understanding what information is needed and choosing suitable techniques."
+        },
+        {
+          "choice_text": "Schedule a meeting with all employees",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Not all employees need to be involved; only relevant stakeholders should participate."
+        },
+        {
+          "choice_text": "Write the final requirements document",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Requirements are elicited first, then documented based on findings."
+        }
+      ]
+    },
+    {
+      "ka_code": "ELICITATION",
+      "domain_code": "CONDUCT_ELICIT",
+      "question_text": "Which elicitation technique is most effective for understanding complex business processes?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.7,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Observation combined with process modeling",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Observing how work is actually done and modeling it provides deep insight into complex processes."
+        },
+        {
+          "choice_text": "Sending a survey to all stakeholders",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Surveys gather broad input but don't capture the depth needed for complex processes."
+        },
+        {
+          "choice_text": "Brainstorming session",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Brainstorming generates ideas but doesn't systematically document existing processes."
+        },
+        {
+          "choice_text": "Document analysis alone",
+          "is_correct": false,
+          "choice_order": 4,
+          "explanation": "Documents show how processes should work, but may not reflect actual practice."
+        }
+      ]
+    },
+    {
+      "ka_code": "ELICITATION",
+      "question_text": "Elicitation activities should continue throughout the entire business analysis effort.",
+      "question_type": "true_false",
+      "difficulty": 0.3,
+      "source": "custom",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Correct. Elicitation is ongoing as new information emerges and understanding deepens throughout the initiative."
+        },
+        {
+          "choice_text": "False",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Elicitation continues throughout the BA effort, not just at the beginning."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_LIFECYCLE",
+      "domain_code": "TRACE_REQ",
+      "question_text": "What is the primary benefit of requirements traceability?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "It enables impact analysis when requirements change and ensures alignment with business objectives",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Traceability shows relationships between requirements, designs, tests, and objectives, enabling comprehensive impact analysis."
+        },
+        {
+          "choice_text": "It eliminates the need for testing",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Traceability supports testing but doesn't eliminate its need."
+        },
+        {
+          "choice_text": "It automatically generates code",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Traceability is about relationships between artifacts, not code generation."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_LIFECYCLE",
+      "domain_code": "MAINTAIN_REQ",
+      "question_text": "Requirements should never be changed once they are baselined and approved.",
+      "question_type": "true_false",
+      "difficulty": 0.3,
+      "source": "custom",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": false,
+          "choice_order": 1,
+          "explanation": "Baselined requirements can change through formal change control processes when business needs evolve."
+        },
+        {
+          "choice_text": "False",
+          "is_correct": true,
+          "choice_order": 2,
+          "explanation": "Correct. Requirements can and should change when necessary, but changes must go through proper governance and change control."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_LIFECYCLE",
+      "domain_code": "PRIORITIZE_REQ",
+      "question_text": "Which technique is commonly used to prioritize requirements based on value and cost?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "MoSCoW analysis or weighted ranking",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "MoSCoW (Must have, Should have, Could have, Won't have) and weighted ranking are common prioritization techniques."
+        },
+        {
+          "choice_text": "Alphabetical ordering",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Alphabetical ordering doesn't consider value or business importance."
+        },
+        {
+          "choice_text": "Random selection",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Random selection doesn't support strategic prioritization."
+        }
+      ]
+    },
+    {
+      "ka_code": "STRATEGY_ANALYSIS",
+      "domain_code": "ANALYZE_STATE",
+      "question_text": "What is the purpose of analyzing the current state in strategy analysis?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "To understand the current state of the enterprise and identify gaps between current and desired states",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Current state analysis establishes a baseline for identifying improvement opportunities and planning change."
+        },
+        {
+          "choice_text": "To document past mistakes",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "While lessons learned are valuable, the primary purpose is understanding current capabilities and gaps."
+        },
+        {
+          "choice_text": "To create job descriptions",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Job descriptions may be an output but aren't the purpose of current state analysis."
+        }
+      ]
+    },
+    {
+      "ka_code": "STRATEGY_ANALYSIS",
+      "domain_code": "DEFINE_FUTURE",
+      "question_text": "A future state description should always be extremely detailed with specific technical solutions identified.",
+      "question_type": "true_false",
+      "difficulty": 0.4,
+      "source": "custom",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": false,
+          "choice_order": 1,
+          "explanation": "Future state defines what needs to be achieved (the 'what'), but detailed technical solutions (the 'how') come later."
+        },
+        {
+          "choice_text": "False",
+          "is_correct": true,
+          "choice_order": 2,
+          "explanation": "Correct. The future state focuses on business capabilities and outcomes, not specific technical solutions."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_ANALYSIS",
+      "domain_code": "SPECIFY_REQ",
+      "question_text": "Why should requirements be modeled in multiple formats?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Different stakeholders understand information better in different formats, and models reveal different aspects of requirements",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Multiple models serve different audiences and purposes, each highlighting different requirement characteristics."
+        },
+        {
+          "choice_text": "To make the project appear more complex",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Multiple models clarify understanding, not create complexity."
+        },
+        {
+          "choice_text": "To increase the number of pages in documentation",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Volume is not the goal; clarity and completeness are."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_ANALYSIS",
+      "domain_code": "VERIFY_REQ",
+      "question_text": "What is the difference between verifying and validating requirements?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.7,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Verification ensures requirements are well-formed and of quality; validation ensures they deliver business value",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Verification checks that requirements are correct, complete, consistent, etc. Validation ensures they meet business needs and goals."
+        },
+        {
+          "choice_text": "They are the same thing",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Verification and validation are distinct quality assurance activities with different purposes."
+        },
+        {
+          "choice_text": "Verification is done by testers; validation is done by developers",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Roles may vary, but the distinction is about what is being checked, not who checks it."
+        }
+      ]
+    },
+    {
+      "ka_code": "REQ_ANALYSIS",
+      "question_text": "All requirements must be testable and measurable to be considered high quality.",
+      "question_type": "true_false",
+      "difficulty": 0.3,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "True",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Correct. Requirements must have clear acceptance criteria that can be tested to verify correct implementation."
+        },
+        {
+          "choice_text": "False",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Testability is a fundamental quality characteristic of requirements."
+        }
+      ]
+    },
+    {
+      "ka_code": "SOLUTION_EVAL",
+      "domain_code": "MEASURE_PERF",
+      "question_text": "When should performance metrics for a solution be defined?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.5,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "During requirements analysis, before the solution is built",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Metrics must be defined early so the solution can be designed to capture necessary data and support measurement."
+        },
+        {
+          "choice_text": "After the solution is deployed, to see what can be measured",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Defining metrics after deployment is too late; the solution may not support required measurements."
+        },
+        {
+          "choice_text": "During user acceptance testing",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "UAT may test some metrics, but they should be defined much earlier."
+        }
+      ]
+    },
+    {
+      "ka_code": "SOLUTION_EVAL",
+      "domain_code": "ANALYZE_PERF",
+      "question_text": "What should a business analyst do when solution performance metrics indicate the solution is not meeting business objectives?",
+      "question_type": "multiple_choice",
+      "difficulty": 0.6,
+      "source": "vendor",
+      "answer_choices": [
+        {
+          "choice_text": "Investigate root causes, assess limitations, and recommend corrective actions",
+          "is_correct": true,
+          "choice_order": 1,
+          "explanation": "Performance shortfalls require analysis to understand why they're occurring and what can be done to improve results."
+        },
+        {
+          "choice_text": "Immediately shut down the solution",
+          "is_correct": false,
+          "choice_order": 2,
+          "explanation": "Understanding the problem and exploring solutions comes before drastic action."
+        },
+        {
+          "choice_text": "Change the metrics to make performance look better",
+          "is_correct": false,
+          "choice_order": 3,
+          "explanation": "Metrics should accurately reflect business value; changing them to hide problems doesn't help."
+        },
+        {
+          "choice_text": "Blame the development team",
+          "is_correct": false,
+          "choice_order": 4,
+          "explanation": "The focus should be on understanding and solving the problem, not assigning blame."
+        }
+      ]
+    }
+  ]
+}

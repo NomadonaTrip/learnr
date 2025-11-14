@@ -4,7 +4,7 @@ API v1 routers.
 All API endpoints are versioned under /v1/.
 """
 from fastapi import APIRouter
-from app.api.v1 import auth, onboarding, sessions, diagnostic, practice, dashboard, reviews, admin
+from app.api.v1 import auth, onboarding, sessions, diagnostic, practice, dashboard, reviews, admin, content, exams
 
 # Create main v1 router
 api_router = APIRouter(prefix="/v1")
@@ -17,6 +17,8 @@ api_router.include_router(diagnostic.router, prefix="/diagnostic", tags=["Diagno
 api_router.include_router(practice.router, prefix="/practice", tags=["Practice Sessions"])
 api_router.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"])
 api_router.include_router(reviews.router, prefix="/reviews", tags=["Spaced Repetition"])
+api_router.include_router(content.router, prefix="/content", tags=["Content & Recommendations"])
+api_router.include_router(exams.router, prefix="/exams", tags=["Mock Exams"])
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin Dashboard"])
 
 __all__ = ["api_router"]

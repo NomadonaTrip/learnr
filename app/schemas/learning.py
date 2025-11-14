@@ -199,3 +199,78 @@ class DueCardsResponse(BaseModel):
     """
     due_count: int
     cards: List[SpacedRepetitionCardResponse]
+
+
+# ==================== Mock Exam Schemas ====================
+
+
+class MockExamCreateRequest(BaseModel):
+    """
+    Request to create a mock exam session.
+
+    Mock exams simulate actual certification exam conditions with:
+    - Questions distributed by KA weights
+    - Full exam length (e.g., 120 questions for CBAP)
+    - Randomized question order
+    """
+    # No parameters needed - uses user's course from profile
+
+
+class MockExamResponse(BaseModel):
+    """
+    Mock exam session created response.
+
+    Returns session details to begin the exam.
+    """
+    session_id: UUID
+    session_type: str
+    total_questions: int
+    exam_duration_minutes: int  # Expected duration
+    started_at: datetime
+    instructions: str
+
+
+class KAPerformance(BaseModel):
+    """
+    Performance metrics for a single knowledge area.
+    """
+    ka_id: UUID
+    ka_code: Optional[str]
+    ka_name: Optional[str]
+    weight_percentage: float
+    total_questions: int
+    correct_answers: int
+    score_percentage: float
+
+
+class MockExamResultsResponse(BaseModel):
+    """
+    Comprehensive mock exam results with analytics.
+
+    Includes overall score, KA breakdown, and personalized recommendations.
+    """
+    session_id: UUID
+    exam_type: str
+    completed_at: Optional[str]
+
+    # Overall Performance
+    total_questions: int
+    correct_answers: int
+    incorrect_answers: int
+    score_percentage: float
+    passing_score: float
+    passed: bool
+    margin: float  # Difference from passing score (positive if passed)
+
+    # Time Statistics
+    duration_seconds: int
+    duration_minutes: int
+    avg_seconds_per_question: float
+
+    # KA Performance (sorted by score, weakest first)
+    performance_by_ka: List[KAPerformance]
+    strongest_areas: List[KAPerformance]
+    weakest_areas: List[KAPerformance]
+
+    # Recommendations
+    next_steps: List[str]
