@@ -188,7 +188,7 @@ def get_content_for_recent_mistakes(
         QuestionAttempt.user_id == user_id,
         QuestionAttempt.is_correct == False
     ).order_by(
-        QuestionAttempt.created_at.desc()
+        QuestionAttempt.attempted_at.desc()
     ).limit(20).all()
 
     if not recent_incorrect:

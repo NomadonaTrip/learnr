@@ -196,7 +196,7 @@ def create_mock_exam_session(
             session_id=session.session_id,
             selected_choice_id=None,  # Not answered yet
             is_correct=False,  # Default, will be updated on answer
-            created_at=datetime.now(timezone.utc)
+            attempted_at=datetime.now(timezone.utc)
         )
         db.add(attempt)
 

@@ -846,5 +846,10 @@ def test_completed_mock_exam_with_time(db, test_user_with_profile, test_question
         db.add(attempt)
 
     db.commit()
+
+    # Calculate total duration from all attempts
+    total_duration = sum(60 + (i % 13) * 10 for i in range(100))
+    session.duration_seconds = total_duration
+    db.commit()
     db.refresh(session)
     return session

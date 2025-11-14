@@ -190,7 +190,7 @@ def get_content_chunk(
         and_(
             ReadingConsumed.user_id == current_user.user_id,
             ReadingConsumed.chunk_id == str(chunk_id),
-            ReadingConsumed.read_at >= one_hour_ago
+            ReadingConsumed.started_reading_at >= one_hour_ago
         )
     ).first()
 
@@ -199,8 +199,7 @@ def get_content_chunk(
         reading = ReadingConsumed(
             user_id=current_user.user_id,
             chunk_id=str(chunk_id),
-            ka_id=chunk.ka_id,
-            read_at=datetime.now(timezone.utc),
+            started_reading_at=datetime.now(timezone.utc),
             time_spent_seconds=0  # Can be updated via separate endpoint
         )
         db.add(reading)
